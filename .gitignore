@@ -4,7 +4,7 @@ venv/
 venv310/
 __pycache__/
 *.pyc
-
+serviceAccountKey.json
 # Node
 node_modules/
 
