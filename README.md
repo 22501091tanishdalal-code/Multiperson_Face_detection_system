@@ -1,37 +1,23 @@
 # Attendify AI - Face Recognition Attendance System
 
-Attendify AI is a full-stack AI-powered attendance management system using face recognition.
+AI-powered face recognition attendance system using InsightFace, FastAPI, React, and Firebase.
 
 ## Features
 
-- Face Recognition Attendance
-- Real-time Camera Detection
-- React Frontend
-- FastAPI Backend
-- Firebase Integration
-- InsightFace AI Model
+- Face recognition attendance
+- Real-time webcam detection
+- Firebase attendance storage
+- React frontend
+- FastAPI backend
+- InsightFace AI model
 
 ## Tech Stack
 
-### Frontend
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-
-### Backend
+- React + TypeScript
 - FastAPI
-- Python
 - InsightFace
+- Firebase
 - OpenCV
-- Firebase Firestore
-
-## Project Structure
-
-Attendify/
-├── frontend/
-├── Backend/
-├── training/
 
 ## How to Run
 
@@ -40,11 +26,3 @@ Attendify/
 ```bash
 cd Backend
 python -m uvicorn main:app --reload --port 8001
-
-
-### Frontend
-
-```bash
-cd frontend
-npm run dev
-
