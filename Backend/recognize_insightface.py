@@ -108,7 +108,7 @@ app = FaceAnalysis(
     name="buffalo_s",
     providers=["CPUExecutionProvider"]
 )
-app.prepare(ctx_id=0, det_size=(640, 640))
+app.prepare(ctx_id=1, det_size=(640, 640))
 
 # ======================================================
 # ATTENDANCE FUNCTION
