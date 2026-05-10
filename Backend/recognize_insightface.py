@@ -35,7 +35,17 @@ def update_status(message):
 # ======================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 EMB_PATH = os.path.join(BASE_DIR, "insight_embeddings.pkl")
-SERVICE_KEY = os.path.join(BASE_DIR, "serviceAccountKey.json")
+import firebase_admin
+from firebase_admin import credentials, firestore
+import os
+import json
+
+if not firebase_admin._apps:
+    firebase_key = json.loads(os.environ["FIREBASE_KEY"])
+    cred = credentials.Certificate(firebase_key)
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 # ======================================================
 # FIREBASE
