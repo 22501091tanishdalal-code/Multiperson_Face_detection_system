@@ -9,3 +9,4 @@ pickle-mixin
 firebase-admin
 Pillow
 scikit-learn
+insightface
