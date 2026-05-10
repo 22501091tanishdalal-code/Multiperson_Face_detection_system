@@ -1,0 +1,20 @@
+# Python
+venv/
+ven/
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Secrets
+serviceAccountKey.json
+.env
+
+# OS files
+.DS_Store
+
+# Build files
+dist/
+build/
