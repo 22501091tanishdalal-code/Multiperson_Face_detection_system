@@ -10,3 +10,4 @@ firebase-admin
 Pillow
 scikit-learn
 insightface
+onnxruntime
