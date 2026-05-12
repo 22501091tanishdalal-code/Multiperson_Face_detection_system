@@ -7,6 +7,13 @@ import FaceDetector from "./pages/FaceDetector";
 import Help from "./pages/Help";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import TeacherDashboard from "./teacher/TeacherDashboard";
+import TeacherAttendance from "./teacher/TeacherAttendance";
+import TeacherMarkAttendance from "./teacher/TeacherMarkAttendance";
+import TeacherReports from "./teacher/TeacherReports";
+import TeacherFaceMonitor from "./teacher/TeacherFaceMonitor";
+import TeacherAlerts from "./teacher/TeacherAlerts";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -53,6 +60,59 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/teacher-dashboard"
+  element={
+    <ProtectedRoute>
+      <TeacherDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/teacher/attendance"
+  element={
+    <ProtectedRoute>
+      <TeacherAttendance />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/teacher/mark-attendance"
+  element={
+    <ProtectedRoute>
+      <TeacherMarkAttendance />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/teacher/reports"
+  element={
+    <ProtectedRoute>
+      <TeacherReports />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/teacher/face-monitor"
+  element={
+    <ProtectedRoute>
+      <TeacherFaceMonitor />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/teacher/alerts"
+  element={
+    <ProtectedRoute>
+      <TeacherAlerts />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
