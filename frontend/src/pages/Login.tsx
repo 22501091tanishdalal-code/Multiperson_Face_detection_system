@@ -51,6 +51,7 @@ async function handleLogin(e: React.FormEvent) {
 
     if (studentData.password === password) {
       localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("role", "student");
       localStorage.setItem("studentId", numericStudentId.toString());
       localStorage.setItem("studentEmail", studentData.email_id); 
       navigate("/menu");

@@ -55,15 +55,27 @@ export default function Help() {
     window.open(gmailUrl, "_blank", "noopener,noreferrer");
   }
 
+  function handleBack() {
+  const role = localStorage.getItem("role");
+
+  if (role === "teacher") {
+    navigate("/teacher-dashboard");
+  } else if (role === "admin") {
+    navigate("/admin-dashboard");
+  } else {
+    navigate("/menu");
+  }
+}
+
   return (
     <div className="help-page">
-      <button
-        className="student-back-btn"
-        onClick={() => navigate("/menu")}
-        type="button"
-      >
-        ← Back
-      </button>
+     <button
+  className="student-back-btn"
+  onClick={handleBack}
+  type="button"
+>
+  ← Back
+</button>
 
       <div className="help-header">
         <img
