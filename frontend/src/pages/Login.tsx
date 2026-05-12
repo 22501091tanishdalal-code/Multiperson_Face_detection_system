@@ -8,10 +8,24 @@ export default function Login() {
 
   const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("student");
   const [showPassword, setShowPassword] = useState(false);
 
 async function handleLogin(e: React.FormEvent) {
   e.preventDefault();
+
+  if (role === "teacher") {
+    if (studentId === "teacher" && password === "teacher123") {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("role", "teacher");
+      localStorage.setItem("teacherId", studentId);
+      navigate("/teacher-dashboard");
+      return;
+    } else {
+      alert("Invalid teacher credentials");
+      return;
+    }
+  }
 
   const numericStudentId = parseInt(studentId, 10);
 
@@ -61,9 +75,34 @@ async function handleLogin(e: React.FormEvent) {
 />
 
         <h2>ATTENDIFY LOGIN</h2>
+<div className="role-switch">
+  <button
+    type="button"
+    className={role === "student" ? "role-btn active-role" : "role-btn"}
+    onClick={() => setRole("student")}
+  >
+    Student
+  </button>
+
+  <button
+    type="button"
+    className={role === "teacher" ? "role-btn active-role" : "role-btn"}
+    onClick={() => setRole("teacher")}
+  >
+    Teacher
+  </button>
+
+  <button
+    type="button"
+    className={role === "admin" ? "role-btn active-role" : "role-btn"}
+    onClick={() => setRole("admin")}
+  >
+    Admin
+  </button>
+</div>
 
         <div className="login-field">
-          <label>Student ID</label>
+       <label>{role === "teacher" ? "Teacher ID" : role === "admin" ? "Admin ID" : "Student ID"}</label>
           <input
             type="text"
             value={studentId}
