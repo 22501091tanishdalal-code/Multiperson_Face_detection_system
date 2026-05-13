@@ -4,11 +4,20 @@ import pickle
 import numpy as np
 from insightface.app import FaceAnalysis
 
-DATA_DIR = "../Data"
-SAVE_PATH = "../insight_embeddings.pkl"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_DIR = os.path.join(BASE_DIR, "..", "Data")
+
+SAVE_PATH = os.path.join(
+    BASE_DIR,
+    "..",
+    "..",
+    "Backend",
+    "insight_embeddings.pkl"
+)
 
 app = FaceAnalysis(
-    name="buffalo_s",  # ArcFace 512D
+    name="buffalo_s",
     providers=["CPUExecutionProvider"]
 )
 app.prepare(ctx_id=0, det_size=(320, 320))

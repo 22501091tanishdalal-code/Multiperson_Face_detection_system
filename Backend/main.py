@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 
 # 🔥 IMPORT YOUR MODEL FUNCTION
-from recognize_insightface import recognize_image
+from Backend.recognize_insightface import recognize_image
 
 # =========================
 # FASTAPI INIT
@@ -30,7 +30,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate("serviceAccountKey.json")
+    cred = credentials.Certificate("attendify.json")
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -75,12 +75,28 @@ async def recognize(file: UploadFile = File(...)):
         
         img = cv2.resize(img, (640, 480))
         # 🔥 CALL YOUR MODEL
+        print("📸 Image received")
+
+        img = cv2.resize(img, (640, 480))
+
+        print("🧠 Starting recognition")
+
+        print("1️⃣ Request received")
+
+        img = cv2.resize(img, (640, 480))
+
+        print("2️⃣ Image resized")
+
         results = recognize_image(img)
+
+        print("3️⃣ Recognition complete")
+
+        print("✅ Recognition finished")
 
         return {
             "success": True,
             "faces": results
-        }
+            }
 
     except Exception as e:
         return {

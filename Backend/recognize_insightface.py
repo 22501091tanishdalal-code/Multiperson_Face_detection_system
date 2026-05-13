@@ -8,7 +8,7 @@ from firebase_admin import credentials, firestore
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVICE_KEY = os.path.join(BASE_DIR, "security_key.json")
+SERVICE_KEY = os.path.join(BASE_DIR, "attendify.json")
 STATUS_FILE = os.path.join(os.path.dirname(__file__), "status.txt")
 
 def write_status(msg: str):
@@ -54,7 +54,7 @@ from insightface.app import FaceAnalysis
 # ======================================================
 # CONFIG
 # ======================================================
-THRESHOLD = 0.45                  # ArcFace cosine similarity
+THRESHOLD = 0.35                 # ArcFace cosine similarity
 ATTENDANCE_COOLDOWN_MINUTES = 60  # 1 hour cooldown
 
 # ======================================================
@@ -74,7 +74,7 @@ if not firebase_admin._apps:
    firebase_admin.initialize_app(cred)
 
 firestore_db = firestore.client()
-
+# firestore_db = None
 # ======================================================
 # LOAD EMBEDDINGS
 # ======================================================
@@ -165,7 +165,9 @@ def run_camera_recognition():
             print("❌ Failed to read frame")
             break
 
-        faces = app.get(frame)
+        print("4️⃣ Starting app.get")
+        faces = app.get(img)
+        print("5️⃣ app.get finished")
 
         for face in faces:
             total_faces += 1
