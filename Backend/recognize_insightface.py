@@ -8,7 +8,7 @@ from firebase_admin import credentials, firestore
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVICE_KEY = os.path.join(BASE_DIR, "serviceAccountKey.json")
+SERVICE_KEY = os.path.join(BASE_DIR, "security_key.json")
 STATUS_FILE = os.path.join(os.path.dirname(__file__), "status.txt")
 
 def write_status(msg: str):
@@ -70,8 +70,8 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate(SERVICE_KEY)
-    firebase_admin.initialize_app(cred)
+   cred = credentials.Certificate(SERVICE_KEY)
+   firebase_admin.initialize_app(cred)
 
 firestore_db = firestore.client()
 
@@ -98,7 +98,8 @@ app = FaceAnalysis(
     name="buffalo_l",
     providers=["CPUExecutionProvider"]
 )
-app.prepare(ctx_id=0, det_size=(640, 640))
+# app.prepare(ctx_id=0, det_size=(640, 640))
+app.prepare(ctx_id=-1, det_size=(320, 320))
 
 # ======================================================
 # ATTENDANCE FUNCTION
