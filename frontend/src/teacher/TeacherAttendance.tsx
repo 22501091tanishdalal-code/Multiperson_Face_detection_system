@@ -31,6 +31,10 @@ function TeacherAttendance() {
   const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedSubject, setSelectedSubject] = useState("All");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedWeek, setSelectedWeek] = useState("");
   const teacherId = localStorage.getItem("teacherId");
   const teacherName = localStorage.getItem("teacherName") || "";
 
@@ -91,13 +95,111 @@ function TeacherAttendance() {
     }
   }
 
-  const totalPresent = attendanceData.filter(
-    (record) => record.status === "Present"
-  ).length;
+  const subjects = [
+  "All",
+  ...Array.from(
+    new Set(
+      attendanceData
+        .map((record) => record.subject_name)
+        .filter((subject) => subject.trim() !== "")
+    )
+  ),
+];
 
-  const totalAbsent = attendanceData.filter(
-    (record) => record.status === "Absent"
-  ).length;
+function isDateInSelectedWeek(recordDate: string, selectedWeekValue: string) {
+  if (!recordDate || !selectedWeekValue) return true;
+
+  const record = new Date(recordDate);
+  const [year, week] = selectedWeekValue.split("-W").map(Number);
+
+  const firstDayOfYear = new Date(year, 0, 1);
+  const daysOffset = (week - 1) * 7;
+
+  const weekStart = new Date(firstDayOfYear);
+  weekStart.setDate(firstDayOfYear.getDate() + daysOffset);
+
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+
+  return record >= weekStart && record <= weekEnd;
+}
+
+const filteredAttendanceData = attendanceData.filter((record) => {
+  const subjectMatch =
+    selectedSubject === "All" || record.subject_name === selectedSubject;
+
+  const dateMatch = selectedDate === "" || record.date === selectedDate;
+
+  const monthMatch =
+    selectedMonth === "" || record.date.startsWith(selectedMonth);
+
+  const weekMatch =
+    selectedWeek === "" || isDateInSelectedWeek(record.date, selectedWeek);
+
+  return subjectMatch && dateMatch && monthMatch && weekMatch;
+});
+
+const filteredPresent = filteredAttendanceData.filter(
+  (record) => record.status === "Present"
+).length;
+
+const filteredAbsent = filteredAttendanceData.filter(
+  (record) => record.status === "Absent"
+).length;
+
+function downloadCSV(data: AttendanceRecord[], fileName: string) {
+  if (data.length === 0) {
+    alert("No records available to download.");
+    return;
+  }
+
+  const headers = [
+    "Date",
+    "Time",
+    "Subject",
+    "Student ID",
+    "Exam Roll No",
+    "Student Name",
+    "Department",
+    "Year",
+    "Status",
+    "Remark",
+  ];
+
+  const rows = data.map((record) => [
+    record.date,
+    record.time,
+    `${record.subject_name} (${record.subject_id})`,
+    record.student_id,
+    record.exam_rollno,
+    record.student_name,
+    record.department,
+    record.year,
+    record.status,
+    record.remark || "Not Marked",
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map((row) =>
+      row
+        .map((value) => `"${String(value).replace(/"/g, '""')}"`)
+        .join(",")
+    )
+    .join("\n");
+
+  const blob = new Blob([csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
 
   if (loading) {
     return (
@@ -136,17 +238,17 @@ function TeacherAttendance() {
         <div className="teacher-report-summary">
           <div className="teacher-report-card">
             <h3>Total Records</h3>
-            <p>{attendanceData.length}</p>
+          <p>{filteredAttendanceData.length}</p>
           </div>
 
           <div className="teacher-report-card success">
             <h3>Present</h3>
-            <p>{totalPresent}</p>
+           <p>{filteredPresent}</p>
           </div>
 
           <div className="teacher-report-card danger">
             <h3>Absent</h3>
-            <p>{totalAbsent}</p>
+            <p>{filteredAbsent}</p>
           </div>
 
           <div className="teacher-report-card">
@@ -155,10 +257,79 @@ function TeacherAttendance() {
           </div>
         </div>
 
-        {attendanceData.length === 0 ? (
+        <div className="attendance-filter-card">
+  <div className="attendance-filter-field">
+    <label>Subject</label>
+    <select
+      value={selectedSubject}
+      onChange={(e) => setSelectedSubject(e.target.value)}
+    >
+      {subjects.map((subject) => (
+        <option key={subject} value={subject}>
+          {subject}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <div className="attendance-filter-field">
+    <label>Date</label>
+    <input
+      type="date"
+      value={selectedDate}
+      onChange={(e) => {
+        setSelectedDate(e.target.value);
+        setSelectedMonth("");
+        setSelectedWeek("");
+      }}
+    />
+  </div>
+
+  <div className="attendance-filter-field">
+    <label>Month</label>
+    <input
+      type="month"
+      value={selectedMonth}
+      onChange={(e) => {
+        setSelectedMonth(e.target.value);
+        setSelectedDate("");
+        setSelectedWeek("");
+      }}
+    />
+  </div>
+
+  <div className="attendance-filter-field">
+    <label>Week</label>
+    <input
+      type="week"
+      value={selectedWeek}
+      onChange={(e) => {
+        setSelectedWeek(e.target.value);
+        setSelectedDate("");
+        setSelectedMonth("");
+      }}
+    />
+  </div>
+
+  <button
+    className="attendance-download-btn"
+    type="button"
+    onClick={() =>
+      downloadCSV(
+        filteredAttendanceData,
+        `attendance-records-${selectedSubject}-${
+          selectedDate || selectedMonth || selectedWeek || "all"
+        }.csv`
+      )
+    }
+  >
+    Download CSV
+  </button>
+</div>
+
+        {filteredAttendanceData.length === 0 ? (
           <div className="student-empty">
-            No attendance records found. First go to Mark Attendance and click
-            Save Attendance.
+            No attendance records found for the selected filters.
           </div>
         ) : (
           <div className="table-wrapper">
@@ -179,7 +350,7 @@ function TeacherAttendance() {
               </thead>
 
               <tbody>
-                {attendanceData.map((record) => (
+                {filteredAttendanceData.map((record) => (
                   <tr key={record.id}>
                     <td>{record.date}</td>
                     <td>{record.time}</td>

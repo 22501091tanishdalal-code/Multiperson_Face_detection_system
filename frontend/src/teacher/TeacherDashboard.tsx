@@ -7,13 +7,13 @@ import {
   ClipboardList,
   UserCheck,
   AlertTriangle,
-  FileText,
   HelpCircle,
   LogOut,
 } from "lucide-react";
 
 function TeacherDashboard() {
   const navigate = useNavigate();
+  const teacherName = localStorage.getItem("teacherName") || "Teacher";
 
     const [totalStudents, setTotalStudents] = useState(0);
   const [presentToday, setPresentToday] = useState(0);
@@ -68,6 +68,7 @@ const handleLogout = () => {
   localStorage.removeItem("teacherId");
   localStorage.removeItem("studentId");
   localStorage.removeItem("studentEmail");
+  localStorage.removeItem("teacherName");
 
   navigate("/", { replace: true });
 };
@@ -76,7 +77,7 @@ const handleLogout = () => {
     <div className="menu-bg">
       <div className="menu-container">
         <div className="menu-header">
-          <h1>Teacher Dashboard</h1>
+          <h1>{teacherName} Dashboard</h1>
           <p>Manage attendance, monitor students, and generate class reports.</p>
         </div>
 
@@ -135,15 +136,7 @@ const handleLogout = () => {
             </div>
           </button>
 
-          <button className="menu-card" onClick={() => navigate("/teacher/reports")}>
-            <div>
-              <div className="menu-icon">
-                <FileText size={30} />
-              </div>
-              <h3>Reports</h3>
-              <p>Generate attendance reports by class, subject, and date.</p>
-            </div>
-          </button>
+         
 
           <button className="menu-card" onClick={() => navigate("/help")}>
             <div>

@@ -9,7 +9,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import TeacherDashboard from "./teacher/TeacherDashboard";
 import TeacherAttendance from "./teacher/TeacherAttendance";
 import TeacherMarkAttendance from "./teacher/TeacherMarkAttendance";
-import TeacherReports from "./teacher/TeacherReports";
 import AttendancePage from "./pages/AttendancePage";
 import TeacherAlerts from "./teacher/TeacherAlerts";
 
@@ -86,14 +85,7 @@ export default function App() {
   }
 />
 
-<Route
-  path="/teacher/reports"
-  element={
-    <ProtectedRoute>
-      <TeacherReports />
-    </ProtectedRoute>
-  }
-/>
+
 
 <Route
   path="/attendance"

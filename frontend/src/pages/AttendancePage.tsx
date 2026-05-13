@@ -7,7 +7,8 @@ type AttendanceRecord = {
   id: string;
   student_id: number;
   student_name: string;
-  subject: string;
+  subject_id: string;
+  subject_name: string;
   teacher_name: string;
   status: string;
   date: string;
@@ -53,7 +54,8 @@ export default function AttendancePage() {
           id: doc.id,
           student_id: data.student_id || 0,
           student_name: data.student_name || "",
-          subject: data.subject || "Not Assigned",
+          subject_id: data.subject_id || "",
+          subject_name: data.subject_name || "Not Assigned",
           teacher_name: data.teacher_name || "Not Assigned",
           status: data.status || "Present",
           date: data.date || "",
@@ -77,6 +79,14 @@ export default function AttendancePage() {
     }
   }
 
+  function getSubjectText(record: AttendanceRecord) {
+  if (record.subject_id) {
+    return `${record.subject_name} (${record.subject_id})`;
+  }
+
+  return record.subject_name || "Not Assigned";
+}
+
   function downloadCSV() {
     if (attendance.length === 0) {
       alert("No attendance records available to download.");
@@ -93,15 +103,15 @@ export default function AttendancePage() {
       "Status",
     ];
 
-    const rows = attendance.map((record) => [
-      record.student_id,
-      record.student_name,
-      record.date,
-      record.time,
-      record.subject,
-      record.teacher_name,
-      record.status,
-    ]);
+   const rows = attendance.map((record) => [
+  record.student_id,
+  record.student_name,
+  record.date,
+  record.time,
+  getSubjectText(record),
+  record.teacher_name,
+  record.status,
+]);
 
     const csvContent = [
       headers.join(","),
@@ -163,7 +173,7 @@ export default function AttendancePage() {
 
           <div className="attendance-summary-card">
             <h3>Latest Subject</h3>
-            <p>{attendance[0]?.subject || "--"}</p>
+           <p>{attendance[0] ? getSubjectText(attendance[0]) : "--"}</p>
           </div>
         </div>
 
@@ -210,7 +220,7 @@ export default function AttendancePage() {
                       <td>{record.student_name}</td>
                       <td>{record.date}</td>
                       <td>{record.time}</td>
-                      <td>{record.subject}</td>
+                      <td>{getSubjectText(record)}</td>
                       <td>{record.teacher_name}</td>
                       <td>
                         <span className="attendance-status-pill">
