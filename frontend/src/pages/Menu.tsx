@@ -18,7 +18,7 @@ type Tile = {
 const tiles: Tile[] = [
   { title: "Student Panel", icon: User, path: "/student-panel" },
   { title: "Face Recognition", icon: Camera, path: "/face-detector" },
-  { title: "Attendance", icon: ClipboardList },
+ { title: "Attendance", icon: ClipboardList, path: "/attendance" },
   { title: "Help & Support", icon: HelpCircle, path: "/help" },
   { title: "Logout", icon: LogOut, type: "logout" },
 ];
