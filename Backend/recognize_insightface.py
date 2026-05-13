@@ -3,12 +3,12 @@ import pickle
 import numpy as np
 from datetime import datetime, timedelta
 import os
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-#STATUS_FILE = os.path.join(BASE_DIR, "status.txt")
-
-
+SERVICE_KEY = os.path.join(BASE_DIR, "serviceAccountKey.json")
 STATUS_FILE = os.path.join(os.path.dirname(__file__), "status.txt")
 
 def write_status(msg: str):
@@ -35,18 +35,11 @@ def update_status(message):
 # ======================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 EMB_PATH = os.path.join(BASE_DIR, "insight_embeddings.pkl")
-import firebase_admin
-from firebase_admin import credentials, firestore
-import os
-import json
-
 if not firebase_admin._apps:
-    firebase_key = json.loads(os.environ["FIREBASE_KEY"])
-    cred = credentials.Certificate(firebase_key)
+    cred = credentials.Certificate(SERVICE_KEY)
     firebase_admin.initialize_app(cred)
 
-db = firestore.client()
-
+firestore_db = firestore.client()
 # ======================================================
 # FIREBASE
 # ======================================================
@@ -75,15 +68,12 @@ recognized_faces = 0
 # ======================================================
 import firebase_admin
 from firebase_admin import credentials, firestore
-import os
-import json
 
 if not firebase_admin._apps:
-    firebase_key = json.loads(os.environ["FIREBASE_KEY"])
-    cred = credentials.Certificate(firebase_key)
+    cred = credentials.Certificate(SERVICE_KEY)
     firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+firestore_db = firestore.client()
 
 # ======================================================
 # LOAD EMBEDDINGS
@@ -105,10 +95,10 @@ db_embeddings = np.vstack(db_embeddings)
 # INSIGHTFACE MODEL
 # ======================================================
 app = FaceAnalysis(
-    name="buffalo_s",
+    name="buffalo_l",
     providers=["CPUExecutionProvider"]
 )
-app.prepare(ctx_id=1, det_size=(640, 640))
+app.prepare(ctx_id=0, det_size=(640, 640))
 
 # ======================================================
 # ATTENDANCE FUNCTION
