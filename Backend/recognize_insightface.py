@@ -109,9 +109,10 @@ def mark_attendance(label, confidence):
         now = datetime.utcnow()
 
         records = (
-            firestore_db.collection("attendance")
-            .where("student_id", "==", roll_no)
-            .stream()
+        firestore_db.collection("attendance")
+        .where("student_id", "==", roll_no)
+        .limit(1)
+        .stream()
         )
 
         for record in records:
