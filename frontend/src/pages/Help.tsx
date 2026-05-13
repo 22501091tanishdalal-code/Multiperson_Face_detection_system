@@ -40,26 +40,38 @@ export default function Help() {
   }, []);
 
   function handleSend() {
-    if (!toEmail.trim() || !subject.trim() || !message.trim()) {
-      alert("Please fill To, Subject and Message.");
-      return;
-    }
-
-    const gmailUrl =
-      `https://mail.google.com/mail/?view=cm&fs=1` +
-      `&to=${encodeURIComponent(toEmail)}` +
-      `&su=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(message)}`;
-
-    sessionStorage.setItem(HELP_FORM_SENT_KEY, "true");
-    window.open(gmailUrl, "_blank", "noopener,noreferrer");
+  if (!toEmail.trim() || !subject.trim() || !message.trim()) {
+    alert("Please fill To, Subject and Message.");
+    return;
   }
+
+  const gmailUrl =
+    `https://mail.google.com/mail/?view=cm&fs=1` +
+    `&to=${encodeURIComponent(toEmail)}` +
+    `&su=${encodeURIComponent(subject)}` +
+    `&body=${encodeURIComponent(message)}`;
+
+  sessionStorage.setItem(HELP_FORM_SENT_KEY, "true");
+  window.open(gmailUrl, "_blank", "noopener,noreferrer");
+}
+
+ function handleBack() {
+  const role = localStorage.getItem("role");
+
+  if (role === "teacher") {
+    navigate("/teacher-dashboard");
+  } else if (role === "admin") {
+    navigate("/admin-dashboard");
+  } else {
+    navigate("/menu");
+  }
+}
 
   return (
     <div className="help-page">
       <button
         className="student-back-btn"
-        onClick={() => navigate("/menu")}
+        onClick={handleBack}
         type="button"
       >
         ← Back

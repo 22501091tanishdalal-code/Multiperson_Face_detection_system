@@ -74,7 +74,7 @@ async function handleLogin(e: React.FormEvent) {
   className="login-logo"
 />
 
-        <h2>ATTENDIFY LOGIN</h2>
+ <h2 className="login-title">FACELOOM LOGIN</h2>
 <div className="role-switch">
   <button
     type="button"
@@ -91,18 +91,11 @@ async function handleLogin(e: React.FormEvent) {
   >
     Teacher
   </button>
-
-  <button
-    type="button"
-    className={role === "admin" ? "role-btn active-role" : "role-btn"}
-    onClick={() => setRole("admin")}
-  >
-    Admin
-  </button>
+  
 </div>
 
         <div className="login-field">
-       <label>{role === "teacher" ? "Teacher ID" : role === "admin" ? "Admin ID" : "Student ID"}</label>
+       <label>{role === "teacher" ? "Teacher ID"  : "Student ID"}</label>
           <input
             type="text"
             value={studentId}

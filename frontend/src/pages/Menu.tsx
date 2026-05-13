@@ -44,8 +44,8 @@ export default function Menu() {
     <div className="menu-bg">
       <div className="menu-container">
         <div className="menu-header">
-          <h1>Attendify Dashboard</h1>
-          <p>Manage attendance efficiently</p>
+          <h1>Student Dashboard</h1>
+          <p>Manage Your attendance </p>
         </div>
 
         <div className="menu-grid">
