@@ -6,12 +6,11 @@ import StudentPanel from "./pages/StudentPanel";
 import FaceDetector from "./pages/FaceDetector";
 import Help from "./pages/Help";
 import ProtectedRoute from "./components/ProtectedRoute";
-
 import TeacherDashboard from "./teacher/TeacherDashboard";
 import TeacherAttendance from "./teacher/TeacherAttendance";
 import TeacherMarkAttendance from "./teacher/TeacherMarkAttendance";
 import TeacherReports from "./teacher/TeacherReports";
-import TeacherFaceMonitor from "./teacher/TeacherFaceMonitor";
+
 import TeacherAlerts from "./teacher/TeacherAlerts";
 
 export default function App() {
@@ -96,14 +95,7 @@ export default function App() {
   }
 />
 
-<Route
-  path="/teacher/face-monitor"
-  element={
-    <ProtectedRoute>
-      <TeacherFaceMonitor />
-    </ProtectedRoute>
-  }
-/>
+
 
 <Route
   path="/teacher/alerts"

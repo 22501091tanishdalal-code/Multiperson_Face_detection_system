@@ -43,7 +43,7 @@ function TeacherMarkAttendance() {
           return {
             ...data,
             attendanceStatus: "Absent",
-            remark: "Not marked",
+            remark: "",
           };
         });
 
@@ -59,23 +59,19 @@ function TeacherMarkAttendance() {
     fetchStudents();
   }, []);
 
-  const toggleStatus = (studentId: number) => {
-    setStudents((prevStudents) =>
-      prevStudents.map((student) =>
-        student.student_id === studentId
-          ? {
-              ...student,
-              attendanceStatus:
-                student.attendanceStatus === "Present" ? "Absent" : "Present",
-              remark:
-                student.attendanceStatus === "Present"
-                  ? "Manually marked absent by teacher"
-                  : "Manually marked present by teacher",
-            }
-          : student
-      )
-    );
-  };
+ const toggleStatus = (studentId: number) => {
+  setStudents((prevStudents) =>
+    prevStudents.map((student) =>
+      student.student_id === studentId
+        ? {
+            ...student,
+            attendanceStatus:
+              student.attendanceStatus === "Present" ? "Absent" : "Present",
+          }
+        : student
+    )
+  );
+};
 
   const updateRemark = (studentId: number, value: string) => {
     setStudents((prevStudents) =>
@@ -156,14 +152,19 @@ function TeacherMarkAttendance() {
                     {student.attendanceStatus}
                   </td>
                   <td>
-                    <input
-                      className="field-input"
-                      type="text"
-                      value={student.remark}
-                      onChange={(e) =>
-                        updateRemark(student.student_id, e.target.value)
-                      }
-                    />
+                   <input
+                   className="field-input"
+                   type="text"
+                   value={
+                         student.remark === "Not marked" || student.remark === "Not Marked"
+                           ? ""
+                              : student.remark
+                    }
+                    placeholder="Not Marked"
+                    onChange={(e) =>
+                         updateRemark(student.student_id, e.target.value)
+                     }
+                 />
                   </td>
                   <td>
                     <button

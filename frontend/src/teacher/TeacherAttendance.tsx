@@ -83,7 +83,7 @@ function TeacherAttendance() {
                     >
                       {student.attendanceStatus}
                     </td>
-                    <td>{student.remark}</td>
+                   <td>{student.remark && student.remark.trim() !== "" ? student.remark : "Not marked"}</td>
                   </tr>
                 ))}
               </tbody>

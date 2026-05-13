@@ -6,7 +6,6 @@ import { db } from "../firebaseConfig";
 import {
   ClipboardList,
   UserCheck,
-  Camera,
   AlertTriangle,
   FileText,
   HelpCircle,
@@ -124,15 +123,7 @@ const handleLogout = () => {
             </div>
           </button>
 
-          <button className="menu-card" onClick={() => navigate("/teacher/face-monitor")}>
-            <div>
-              <div className="menu-icon">
-                <Camera size={30} />
-              </div>
-              <h3>Face Monitor</h3>
-              <p>Monitor students marked through face recognition.</p>
-            </div>
-          </button>
+          
 
           <button className="menu-card" onClick={() => navigate("/teacher/alerts")}>
             <div>

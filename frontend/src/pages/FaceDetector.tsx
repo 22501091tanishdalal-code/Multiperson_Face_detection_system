@@ -1,13 +1,9 @@
-
-// src/pages/FaceDetector.tsx
-
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function FaceDetector() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -25,13 +21,15 @@ export default function FaceDetector() {
           await videoRef.current.play();
         }
       } catch (err) {
-        setError("Camera access failed. Please allow permission.");
+        console.error("Camera error:", err);
+        alert("⚠️ Camera permission denied or camera not available.");
       }
     })();
 
     return () => {
       const tracks =
         (videoRef.current?.srcObject as MediaStream | null)?.getTracks() || [];
+
       tracks.forEach((t) => t.stop());
     };
   }, []);
@@ -46,7 +44,11 @@ export default function FaceDetector() {
     const canvas = canvasRef.current;
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+
+    if (!ctx) {
+      setLoading(false);
+      return;
+    }
 
     // Match canvas to video size
     canvas.width = video.videoWidth;
@@ -56,9 +58,15 @@ export default function FaceDetector() {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Convert to image blob
-    const blob: Blob = await new Promise((resolve) =>
-      canvas.toBlob((b) => resolve(b as Blob), "image/jpeg")
+    const blob: Blob | null = await new Promise((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/jpeg")
     );
+
+    if (!blob) {
+      alert("⚠️ Failed to capture image.");
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData();
     formData.append("file", blob, "frame.jpg");
@@ -100,8 +108,6 @@ export default function FaceDetector() {
         </button>
 
         <h1 className="student-page-title">Face Detection</h1>
-
-        {error && <p className="error-text">{error}</p>}
 
         <div className="face-layout">
           <div className="face-video-card">
