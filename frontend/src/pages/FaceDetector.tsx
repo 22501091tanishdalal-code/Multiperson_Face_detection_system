@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 export default function FaceDetector() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -38,6 +40,14 @@ export default function FaceDetector() {
   async function handleMark() {
     if (!videoRef.current || !canvasRef.current) return;
 
+    const loggedInStudentId = localStorage.getItem("studentId");
+
+    if (!loggedInStudentId) {
+      alert("Student login data not found. Please login again.");
+      navigate("/");
+      return;
+    }
+
     setLoading(true);
 
     const video = videoRef.current;
@@ -50,14 +60,11 @@ export default function FaceDetector() {
       return;
     }
 
-    // Match canvas to video size
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    // Draw current frame
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Convert to image blob
     const blob: Blob | null = await new Promise((resolve) =>
       canvas.toBlob((b) => resolve(b), "image/jpeg")
     );
@@ -72,13 +79,20 @@ export default function FaceDetector() {
     formData.append("file", blob, "frame.jpg");
 
     try {
-      const res = await fetch("http://localhost:8001/recognize", {
-        method: "POST",
-        body: formData,
-      });
+     const res = await fetch("http://localhost:8001/recognize", {
+  method: "POST",
+  body: formData,
+});
 
-      const data = await res.json();
-      console.log("Backend result:", data);
+if (!res.ok) {
+  const errorText = await res.text();
+  console.error("Backend HTTP error:", res.status, errorText);
+  alert(`Backend error: ${res.status}. Check backend terminal.`);
+  return;
+}
+
+const data = await res.json();
+console.log("Backend result:", data);
 
       if (!data.faces || data.faces.length === 0) {
         alert("❌ No face detected");
@@ -87,11 +101,90 @@ export default function FaceDetector() {
 
       const face = data.faces[0];
 
-      if (face.status === "recognized") {
-        alert(`✅ ${face.name} marked present`);
-      } else {
+      if (face.status !== "recognized") {
         alert("❌ Face not recognized");
+        return;
       }
+
+      // Logged-in student details from Firebase
+      const studentQuery = query(
+        collection(db, "students"),
+        where("student_id", "==", Number(loggedInStudentId))
+      );
+
+      const studentSnapshot = await getDocs(studentQuery);
+
+      if (studentSnapshot.empty) {
+        alert(
+          "Student record not found in Firebase. Please check students collection and student_id field."
+        );
+        return;
+      }
+
+      const studentData = studentSnapshot.docs[0].data();
+
+      const firebaseStudentName =
+        studentData.name ||
+        studentData.student_name ||
+        studentData.fullName ||
+        "";
+
+      // Safety check: attendance sirf logged-in student ki lage
+      if (
+        face.student_id &&
+        Number(face.student_id) !== Number(loggedInStudentId)
+      ) {
+        alert("❌ This face does not match the logged-in student.");
+        return;
+      }
+
+      // Agar backend student_id nahi bhej raha, to name se check hoga
+      if (
+        !face.student_id &&
+        face.name &&
+        firebaseStudentName &&
+        String(face.name).toLowerCase().trim() !==
+          String(firebaseStudentName).toLowerCase().trim()
+      ) {
+        alert("❌ Recognized face does not match the logged-in student.");
+        return;
+      }
+
+      const subject = prompt("Enter subject name:");
+
+      if (!subject || subject.trim() === "") {
+        alert("Subject name required.");
+        return;
+      }
+
+      const teacherName = prompt("Enter teacher name:");
+
+      if (!teacherName || teacherName.trim() === "") {
+        alert("Teacher name required.");
+        return;
+      }
+
+      const now = new Date();
+
+      const date = now.toLocaleDateString("en-CA");
+
+      const time = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      await addDoc(collection(db, "attendance"), {
+        student_id: Number(loggedInStudentId),
+        student_name: firebaseStudentName || face.name || "",
+        subject: subject.trim(),
+        teacher_name: teacherName.trim(),
+        status: "Present",
+        date: date,
+        time: time,
+        createdAt: now,
+      });
+
+      alert(`✅ ${firebaseStudentName || face.name} marked present`);
     } catch (err) {
       console.error(err);
       alert("⚠️ Server error. Is backend running?");
@@ -119,7 +212,6 @@ export default function FaceDetector() {
               playsInline
             />
 
-            {/* Hidden canvas for capturing frame */}
             <canvas ref={canvasRef} style={{ display: "none" }} />
 
             <p className="hint">
