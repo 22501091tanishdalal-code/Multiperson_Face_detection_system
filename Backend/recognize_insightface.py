@@ -183,6 +183,7 @@ def run_camera_recognition():
                 label = db_labels[best_idx]
                 recognized_faces += 1
                 mark_attendance(label, best_score)
+
                 color = (0, 255, 0)
             else:
                 label = "Unknown"
