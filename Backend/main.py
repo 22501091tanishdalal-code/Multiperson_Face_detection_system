@@ -71,7 +71,9 @@ async def recognize(file: UploadFile = File(...)):
         # convert to numpy image
         np_arr = np.frombuffer(contents, np.uint8)
         img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
+        
+        
+        img = cv2.resize(img, (640, 480))
         # 🔥 CALL YOUR MODEL
         results = recognize_image(img)
 
