@@ -936,34 +936,16 @@ body {
   font-size: 28px;
   font-weight: 800;
 }
-
 .teacher-menu-grid {
   width: 100%;
   max-width: 1060px;
-  margin: 0 auto;
+  margin: 34px auto 0;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 22px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px;
 }
 
-.teacher-menu-grid .menu-card {
-  grid-column: span 3;
-  width: 100%;
-  min-height: 235px;
-  border: 1px solid rgba(96, 165, 250, 0.16);
-  border-radius: 24px;
-  padding: 26px 22px;
-  background: linear-gradient(
-    180deg,
-    rgba(30, 41, 59, 0.95),
-    rgba(15, 23, 42, 0.98)
-  );
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  text-align: left;
-}
-
+/* Common card design */
 .teacher-menu-grid .menu-card {
   width: 100%;
   min-height: 235px;
@@ -979,6 +961,22 @@ body {
   align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
+}
+
+/* Top row: 3 cards */
+.teacher-menu-grid .menu-card:nth-child(1),
+.teacher-menu-grid .menu-card:nth-child(2),
+.teacher-menu-grid .menu-card:nth-child(3) {
+  grid-column: span 2;
+}
+
+/* Bottom row: 2 cards centered */
+.teacher-menu-grid .menu-card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.teacher-menu-grid .menu-card:nth-child(5) {
+  grid-column: 4 / span 2;
 }
 
 .teacher-menu-grid .menu-card h3 {
@@ -992,14 +990,6 @@ body {
   line-height: 1.6;
 }
 
-.teacher-menu-grid .menu-card:nth-child(5) {
-  grid-column: 4 / span 3;
-}
-
-.teacher-menu-grid .menu-card:nth-child(6) {
-  grid-column: 7 / span 3;
-}
-
 @media (max-width: 1100px) {
   .teacher-stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1011,9 +1001,11 @@ body {
     max-width: 720px;
   }
 
-  .teacher-menu-grid .menu-card:nth-child(5),
-  .teacher-menu-grid .menu-card:nth-child(6),
-  .teacher-menu-grid .menu-card:nth-child(7) {
+  .teacher-menu-grid .menu-card:nth-child(1),
+  .teacher-menu-grid .menu-card:nth-child(2),
+  .teacher-menu-grid .menu-card:nth-child(3),
+  .teacher-menu-grid .menu-card:nth-child(4),
+  .teacher-menu-grid .menu-card:nth-child(5) {
     grid-column: auto;
   }
 }
@@ -1830,4 +1822,294 @@ body {
   padding: 5px 10px;
   font-size: 12px;
   font-weight: 800;
+}
+
+/* ================== LOW ATTENDANCE TOOLBAR FIX ================== */
+
+.low-attendance-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 28px 0 26px;
+  width: 100%;
+}
+
+.low-month-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 260px;
+}
+
+.low-month-field label {
+  color: #dbeafe;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.low-month-field input {
+  height: 48px;
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  padding: 0 14px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+}
+
+.low-month-field input:focus {
+  border-color: rgba(96, 165, 250, 0.85);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.low-download-btn {
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  padding: 0 22px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #022c22;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(34, 197, 94, 0.24);
+  transition: 0.22s ease;
+}
+
+.low-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 42px rgba(34, 197, 94, 0.32);
+}
+
+/* ================== LOW ATTENDANCE SUBJECT-WISE CARDS ================== */
+
+.low-subject-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.low-subject-card {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.low-subject-header {
+  padding: 20px 22px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.low-subject-header h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.low-subject-header p {
+  margin: 6px 0 0;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* ================== LOW ATTENDANCE TABLE FIX ================== */
+
+.low-attendance-table {
+  min-width: 1120px;
+  table-layout: fixed;
+}
+
+.low-attendance-table th,
+.low-attendance-table td {
+  vertical-align: middle;
+  word-break: normal;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+/* Student ID */
+.low-attendance-table th:nth-child(1),
+.low-attendance-table td:nth-child(1) {
+  width: 120px;
+}
+
+/* Exam Roll No */
+.low-attendance-table th:nth-child(2),
+.low-attendance-table td:nth-child(2) {
+  width: 135px;
+}
+
+/* Student Name */
+.low-attendance-table th:nth-child(3),
+.low-attendance-table td:nth-child(3) {
+  width: 160px;
+}
+
+/* Department */
+.low-attendance-table th:nth-child(4),
+.low-attendance-table td:nth-child(4) {
+  width: 170px;
+  white-space: normal;
+}
+
+/* Year */
+.low-attendance-table th:nth-child(5),
+.low-attendance-table td:nth-child(5) {
+  width: 70px;
+  text-align: center;
+}
+
+/* Total Classes */
+.low-attendance-table th:nth-child(6),
+.low-attendance-table td:nth-child(6) {
+  width: 125px;
+  text-align: center;
+}
+
+/* Present */
+.low-attendance-table th:nth-child(7),
+.low-attendance-table td:nth-child(7) {
+  width: 95px;
+  text-align: center;
+}
+
+/* Absent */
+.low-attendance-table th:nth-child(8),
+.low-attendance-table td:nth-child(8) {
+  width: 95px;
+  text-align: center;
+}
+
+/* Attendance % */
+.low-attendance-table th:nth-child(9),
+.low-attendance-table td:nth-child(9) {
+  width: 130px;
+  text-align: center;
+}
+
+/* Alert */
+.low-attendance-table th:nth-child(10),
+.low-attendance-table td:nth-child(10) {
+  width: 120px;
+  text-align: center;
+}
+
+.low-attendance-table td:nth-child(9),
+.low-attendance-table td:nth-child(10) {
+  color: #fca5a5;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .low-attendance-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .low-month-field {
+    width: 100%;
+  }
+
+  .low-download-btn {
+    width: 100%;
+  }
+}
+
+/* ================== TEACHER ATTENDANCE FILTER BAR ================== */
+
+.attendance-filter-card {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
+  gap: 14px;
+  align-items: end;
+  margin: 24px 0;
+  padding: 18px;
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  border-radius: 22px;
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.attendance-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attendance-filter-field label {
+  color: #dbeafe;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.attendance-filter-field select,
+.attendance-filter-field input {
+  height: 46px;
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  background: #ffffff;
+  color: #0f172a;
+  padding: 0 13px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  outline: none;
+}
+
+.attendance-filter-field select:focus,
+.attendance-filter-field input:focus {
+  border-color: rgba(96, 165, 250, 0.85);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.attendance-filter-card .attendance-download-btn {
+  height: 46px;
+  min-width: 160px;
+  border: none;
+  border-radius: 14px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.28);
+  transition: 0.22s ease;
+}
+
+.attendance-filter-card .attendance-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 42px rgba(37, 99, 235, 0.38);
+}
+
+@media (max-width: 1100px) {
+  .attendance-filter-card {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .attendance-filter-card .attendance-download-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .attendance-filter-card {
+    grid-template-columns: 1fr;
+  }
 }
