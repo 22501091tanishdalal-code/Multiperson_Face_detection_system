@@ -8,10 +8,10 @@ DATA_DIR = "../Data"
 SAVE_PATH = "../insight_embeddings.pkl"
 
 app = FaceAnalysis(
-    name="buffalo_l",  # ArcFace 512D
+    name="buffalo_s",  # ArcFace 512D
     providers=["CPUExecutionProvider"]
 )
-app.prepare(ctx_id=0, det_size=(640, 640))
+app.prepare(ctx_id=0, det_size=(320, 320))
 
 embeddings_db = {}
 

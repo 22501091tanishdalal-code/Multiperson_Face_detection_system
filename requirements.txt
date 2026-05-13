@@ -1,8 +1,12 @@
-torch>=1.13.0
-torchvision>=0.14.0
-opencv-python
+fastapi
+uvicorn
+python-multipart
+torch==2.0.1
+opencv-python-headless
 numpy
 pickle-mixin
 firebase-admin
 Pillow
 scikit-learn
+insightface
+onnxruntime
