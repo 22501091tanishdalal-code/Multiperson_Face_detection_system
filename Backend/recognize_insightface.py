@@ -95,11 +95,10 @@ db_embeddings = np.vstack(db_embeddings)
 # INSIGHTFACE MODEL
 # ======================================================
 app = FaceAnalysis(
-    name="buffalo_l",
+    name="buffalo_s",
     providers=["CPUExecutionProvider"]
 )
-# app.prepare(ctx_id=0, det_size=(640, 640))
-app.prepare(ctx_id=-1, det_size=(320, 320))
+app.prepare(ctx_id=0, det_size=(320, 320))
 
 # ======================================================
 # ATTENDANCE FUNCTION

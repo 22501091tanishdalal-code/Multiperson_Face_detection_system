@@ -14,18 +14,59 @@ export default function Login() {
 async function handleLogin(e: React.FormEvent) {
   e.preventDefault();
 
-  if (role === "teacher") {
-    if (studentId === "teacher" && password === "teacher123") {
+ if (role === "teacher") {
+
+  try {
+
+    const snapshot = await getDocs(collection(db, "teachers"));
+
+    const teacher = snapshot.docs
+      .map((doc) => doc.data())
+      .find(
+        (t: any) =>
+          t.teacher_id === studentId &&
+          t.Password === password
+      );
+
+    if (teacher) {
+
       localStorage.setItem("isLoggedIn", "true");
+
       localStorage.setItem("role", "teacher");
-      localStorage.setItem("teacherId", studentId);
+
+      localStorage.setItem(
+        "teacherId",
+        teacher.teacher_id
+      );
+
+      localStorage.setItem(
+        "teacherName",
+        teacher.name
+      );
+
+      localStorage.setItem(
+        "teacherEmail",
+        teacher.email
+      );
+
       navigate("/teacher-dashboard");
+
       return;
+
     } else {
+
       alert("Invalid teacher credentials");
+
       return;
     }
+
+  } catch (error) {
+
+    console.error("Teacher Login Error:", error);
+
+    alert("Login failed");
   }
+}
 
   const numericStudentId = parseInt(studentId, 10);
 
