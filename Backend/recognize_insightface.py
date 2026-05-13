@@ -3,12 +3,12 @@ import pickle
 import numpy as np
 from datetime import datetime, timedelta
 import os
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-#STATUS_FILE = os.path.join(BASE_DIR, "status.txt")
-
-
+SERVICE_KEY = os.path.join(BASE_DIR, "serviceAccountKey.json")
 STATUS_FILE = os.path.join(os.path.dirname(__file__), "status.txt")
 
 def write_status(msg: str):
@@ -35,18 +35,11 @@ def update_status(message):
 # ======================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 EMB_PATH = os.path.join(BASE_DIR, "insight_embeddings.pkl")
-import firebase_admin
-from firebase_admin import credentials, firestore
-import os
-import json
-
 if not firebase_admin._apps:
-    firebase_key = json.loads(os.environ["FIREBASE_KEY"])
-    cred = credentials.Certificate(firebase_key)
+    cred = credentials.Certificate(SERVICE_KEY)
     firebase_admin.initialize_app(cred)
 
-db = firestore.client()
-
+firestore_db = firestore.client()
 # ======================================================
 # FIREBASE
 # ======================================================
@@ -75,15 +68,12 @@ recognized_faces = 0
 # ======================================================
 import firebase_admin
 from firebase_admin import credentials, firestore
-import os
-import json
 
 if not firebase_admin._apps:
-    firebase_key = json.loads(os.environ["FIREBASE_KEY"])
-    cred = credentials.Certificate(firebase_key)
+    cred = credentials.Certificate(SERVICE_KEY)
     firebase_admin.initialize_app(cred)
 
-db = firestore.client()
+firestore_db = firestore.client()
 
 # ======================================================
 # LOAD EMBEDDINGS
@@ -105,10 +95,10 @@ db_embeddings = np.vstack(db_embeddings)
 # INSIGHTFACE MODEL
 # ======================================================
 app = FaceAnalysis(
-    name="buffalo_s",
+    name="buffalo_l",
     providers=["CPUExecutionProvider"]
 )
-app.prepare(ctx_id=1, det_size=(640, 640))
+app.prepare(ctx_id=0, det_size=(640, 640))
 
 # ======================================================
 # ATTENDANCE FUNCTION
@@ -238,40 +228,101 @@ def run_camera_recognition():
 # ======================================================
 if __name__ == "__main__":
     run_camera_recognition()
-
+    
 # ---------
 
 def recognize_image(img):
-    global total_faces, recognized_faces
+
+    global total_faces
+    global recognized_faces
 
     faces = app.get(img)
 
     results = []
 
+    # No face detected
+
+    if len(faces) == 0:
+
+        update_status("No face detected")
+
+        return [{
+            "name": "No Face",
+            "confidence": 0,
+            "status": "no_face"
+        }]
+
     for face in faces:
+
         total_faces += 1
 
         emb = face.embedding
         emb = emb / np.linalg.norm(emb)
 
         sims = np.dot(db_embeddings, emb)
+
         best_idx = np.argmax(sims)
-        best_score = sims[best_idx]
+
+        best_score = float(sims[best_idx])
+
+        print("Best score:", best_score)
+
+        # Face matched
 
         if best_score > THRESHOLD:
+
             label = db_labels[best_idx]
+
             recognized_faces += 1
-            mark_attendance(label, best_score)
-            status = "recognized"
+
+            try:
+
+                mark_attendance(label, best_score)
+
+                status_text = (
+                    f"✅ Attendance marked for "
+                    f"{label} ({best_score:.2f})"
+                )
+
+                update_status(status_text)
+
+                status = "recognized"
+
+            except Exception as e:
+
+                error_text = f"❌ Attendance error: {str(e)}"
+
+                print(error_text)
+
+                update_status(error_text)
+
+                status = "error"
+
+        # Unknown face
+
         else:
+
             label = "Unknown"
+
             status = "unknown"
 
+            status_text = (
+                f"❌ Face not recognized "
+                f"({best_score:.2f})"
+            )
+
+            update_status(status_text)
+
         results.append({
+
             "name": label,
-            "confidence": float(best_score),
+
+            "confidence": round(best_score, 2),
+
             "status": status,
+
             "bbox": face.bbox.tolist()
+
         })
 
     return results
